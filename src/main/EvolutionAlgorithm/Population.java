@@ -11,6 +11,8 @@ public class Population {
     private int numberOfCities;
     private Individual best;
     private double bestVal;
+    private double worstVal = 0;
+    private double avg = 0;
     private static Random random = new Random();
 
     public Population(int size, int cities){
@@ -31,23 +33,44 @@ public class Population {
 
     }
 
+    public Individual getBest() {
+        return best;
+    }
+
+    public double getBestVal() {
+        return bestVal;
+    }
+
+    public double getWorstVal() {
+        return worstVal;
+    }
+
+    public double getAvg() {
+        return avg;
+    }
+
     public void nextGeneration(int tournamentSize, double crossChance, double mutationChance){
         Individual[] next = new Individual[population.length];
         bestVal=Double.MAX_VALUE;
+        worstVal = 0;
+        avg = 0;
         best=null;
         for (int i = 0; i < population.length; i++) {
             Individual father = select(tournamentSize);
             Individual mother = select(tournamentSize);
             next[i] = getChild(father, mother, crossChance, mutationChance);
             next[i].setValue();
+            double temp = next[i].getValue();
             if(next[i].getValue()<bestVal){
                 best = next[i];
-                bestVal = next[i].getValue();
+                bestVal = temp;
             }
+            worstVal = Math.max(temp, worstVal);
+            avg += temp;
+
         }
+        avg = avg/population.length;
         population = next;
-        System.out.println(bestVal);
-//        write(best, worst, avarage);
     }
 
     private Individual getChild(Individual father, Individual mother, double crossChance, double mutationChance) {
