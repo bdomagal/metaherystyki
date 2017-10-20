@@ -1,8 +1,9 @@
-package greedy;
+package main.greedy;
 
-import EvolutionAlgorithm.EvaluationFunction;
+import main.EvolutionAlgorithm.EvaluationFunction;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 /**
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 public class Greedy implements IGreedy {
     
     private static Greedy instance;
-
+    private static final Logger LOGGER = Logger.getLogger(Greedy.class.getName());
     private final Integer[][] proximityOrder;
     
     protected Greedy(){
@@ -31,7 +32,13 @@ public class Greedy implements IGreedy {
 
     public static Greedy getInstance(){
         if(instance == null){
-            instance = new Greedy(EvaluationFunction.getInstance().getDistanceMatrix());
+            LOGGER.warning("Greedy needs to be initialized with distances first.");
+        }
+        return instance;
+    }
+    public static Greedy getInstance(double[][] distanceMatrix){
+        if(instance == null){
+            instance = new Greedy(distanceMatrix);
         }
         return instance;
     }
@@ -49,5 +56,23 @@ public class Greedy implements IGreedy {
             }
         }
         return sequence;
+    }
+
+    /**
+     * Created by Bartek on 18.10.2017.
+     */
+    public static class CitiesDistanceComparator implements Comparator<Integer> {
+
+        private final double[] distances;
+
+        CitiesDistanceComparator(double[] distances) {
+            this.distances = distances;
+        }
+
+
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return (int)((distances[o1]-distances[o2])*1000);
+        }
     }
 }

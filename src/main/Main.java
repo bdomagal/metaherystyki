@@ -1,14 +1,12 @@
 package main;
 
-import EvolutionAlgorithm.EvaluationFunction;
-import EvolutionAlgorithm.IEvaluationFunction;
-import EvolutionAlgorithm.Individual;
-import greedy.Greedy;
-import map.World;
+import main.EvolutionAlgorithm.EvaluationFunction;
+import main.EvolutionAlgorithm.IEvaluationFunction;
+import main.EvolutionAlgorithm.Individual;
+import main.EvolutionAlgorithm.Population;
+import main.map.World;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -25,30 +23,12 @@ public class Main {
 	// write your code here
         loadParameters(args);
         System.out.println(" "+mutationChance+crossChance+filePath+populationSize+generations+iterations+tournament);
-        World w = new World("tsp_data/kroA100.tsp");
-        IEvaluationFunction e = EvaluationFunction.getInstance(w);
-        Individual i = new Individual(w.getWorld().length);
-        Individual b = new Individual(w.getWorld().length);
-        Individual result = i.cross(1, b);
-        int[] seq  = i.getSequence();
-        for (int i1 : seq) {
-            System.out.print(i1 + ", ");
-
+        World w = new World(filePath);
+        Population population = new Population(populationSize, w.getSize());
+        for(int i =0; i<generations; i++){
+            System.out.print(i+"  ");
+            population.nextGeneration(tournament, crossChance, mutationChance);
         }
-        System.out.println();
-        seq  = b.getSequence();
-        for (int i1 : seq) {
-            System.out.print(i1 + ", ");
-
-        }
-        System.out.println();
-        seq  = result.getSequence();
-        for (int i1 : seq) {
-            System.out.print(i1 + ", ");
-
-        }
-            System.out.println();
-            System.out.println(e.evaluate(i));
 
     }
 

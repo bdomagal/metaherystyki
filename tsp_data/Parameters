@@ -1,3 +1,4 @@
 Mutation,   Cross,  Source,                 population,     generations,    iterations,     tournament
 
 0.1         0.5     tsp_data/kroA100.tsp    100             100             10              5
+0.1         0.5     tsp_data/kroA100.tsp    10000           400             10              25
