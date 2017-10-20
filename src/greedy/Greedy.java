@@ -12,15 +12,13 @@ public class Greedy implements IGreedy {
     
     private static Greedy instance;
 
-    private static final Logger LOGGER = Logger.getLogger(Greedy.class.getName());
-
     private final Integer[][] proximityOrder;
     
     protected Greedy(){
         proximityOrder = null;
     }
 
-    protected Greedy(double[][] distanceMatrix){
+    private Greedy(double[][] distanceMatrix){
         proximityOrder = new Integer[distanceMatrix.length][distanceMatrix.length];
         for (int i = 0; i < distanceMatrix.length; i++) {
             Integer[] matrix = proximityOrder[i];
@@ -29,17 +27,7 @@ public class Greedy implements IGreedy {
             }
             Arrays.sort(matrix, new CitiesDistanceComparator(distanceMatrix[i]));
         }
-        for (int i = 0; i < proximityOrder.length; i++) {
-            Integer[] integers = proximityOrder[i];
-            for (int j = 0; j < integers.length; j++) {
-                Integer integer = integers[j];
-                System.out.print(integer+ ", ");
-            }
-            System.out.println();
-        }
     }
-
-
 
     public static Greedy getInstance(){
         if(instance == null){

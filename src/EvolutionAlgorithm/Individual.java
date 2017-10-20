@@ -1,6 +1,8 @@
 package EvolutionAlgorithm;
 
 
+import greedy.Greedy;
+
 import java.util.*;
 
 /**
@@ -11,10 +13,12 @@ public class Individual {
 
     private static Random random = new Random();
 
+    private final Greedy greedy;
 
     public Individual(int numberOfCities){
         sequence = new int[numberOfCities];
         init(numberOfCities);
+        greedy = Greedy.getInstance();
     }
 
     public int[] getSequence() {
@@ -23,6 +27,7 @@ public class Individual {
 
     private Individual(int[] sequence){
         this.sequence = sequence;
+        greedy = Greedy.getInstance();
     }
 
     public void mutate(double mutationChance){
@@ -35,22 +40,28 @@ public class Individual {
         }
     }
 
-/*    public void cross(double crossChance, Individual other){
+    public Individual cross(double crossChance, Individual other){
         if(random.nextDouble() <= crossChance){
             int[] child = new int[sequence.length];
-            boolean[] assignedCities = new boolean[sequence.length];
+            boolean[] used = new boolean[sequence.length];
             for (int i = 0; i < child.length/2; i++) {
                 child[i] = sequence[i];
-                used.add(sequence[i]);
+                used[sequence[i]] = true;
             }
             for (int i = child.length-1; i >= child.length/2; i--) {
-                if(!used.contains(other.sequence[i])){
-                    child.
+                if(!used[other.sequence[i]]){
+                    child[i] = other.sequence[i];
+                    used[other.sequence[i]] = true;
                 }
-
+                else{
+                    child[i] = -1;
+                }
             }
+            child = greedy.fillMissing(child, used);
+            return new Individual(child);
         }
-    }*/
+        return null;
+    }
 
 
     /**
@@ -58,7 +69,7 @@ public class Individual {
      * @param numberOfCities - number of cities to visit
      */
     private void init(int numberOfCities) {
-        ArrayList<Integer> temp = new ArrayList<Integer>();
+        ArrayList<Integer> temp = new ArrayList<>();
         for (int i = 0; i < numberOfCities; i++) {
             temp.add(i);
         }
