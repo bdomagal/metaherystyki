@@ -18,7 +18,7 @@ public class Individual {
 
     private double value;
 
-    double getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -30,6 +30,16 @@ public class Individual {
         sequence = new int[numberOfCities];
         init(numberOfCities);
         greedy = Greedy.getInstance(EvaluationFunction.getInstance().getDistanceMatrix());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i : sequence) {
+            sb.append(String.format("%03d, ", i));
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     int[] getSequence() {

@@ -1,5 +1,7 @@
 package main;
 
+import main.EvolutionAlgorithm.Individual;
+import main.EvolutionAlgorithm.Tabu;
 import main.map.World;
 
 import java.io.File;
@@ -29,21 +31,21 @@ public class Main {
         worsts = new double[generations];
         results = new double[iterations];
         World w = new World(filePath);
-        for(int g=0; g<iterations; g++) {
-            System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
-            File f = new File(g+".csv");
-            PrintWriter pw = new PrintWriter(f);
-            StringBuilder sb = new StringBuilder("sep=,\n");
-            for (int i = 0; i < bests.length; i++) {
-                sb.append(i).append(",").append((int) bests[i]).append(",").append((int) avgs[i]).append(",").append((int) worsts[i]).append("\n");
+        int threads = 10;
+        while(threads>0) {
+            Thread thread = new Thread(() -> {
+                Tabu tabuSearch = new Tabu(w.getSize(), 1000, 100000, 50);
+                double max = Double.MAX_VALUE;
+                for (int i = 0; i < 1; i++) {
+                    Individual ind = tabuSearch.tabuSearch();
+                    max = Math.min(ind.getValue(), max);
+                }
+                System.out.println(max);
+            });
+            thread.start();
+            threads--;
 
-            }
-            pw.write(sb.toString());
-            pw.flush();
-            pw.close();
-            results[g] = bests[generations-1];
         }
-        calculateVariance();
     }
 
     private static void calculateVariance() {
