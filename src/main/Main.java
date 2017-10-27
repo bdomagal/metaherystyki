@@ -1,9 +1,5 @@
 package main;
 
-import main.EvolutionAlgorithm.EvaluationFunction;
-import main.EvolutionAlgorithm.IEvaluationFunction;
-import main.EvolutionAlgorithm.Individual;
-import main.EvolutionAlgorithm.Population;
 import main.map.World;
 
 import java.io.File;
@@ -34,19 +30,12 @@ public class Main {
         results = new double[iterations];
         World w = new World(filePath);
         for(int g=0; g<iterations; g++) {
-            Population population = new Population(populationSize, w.getSize());
-            for (int i = 0; i < generations; i++) {
-                population.nextGeneration(tournament, crossChance, mutationChance);
-                bests[i] = population.getBestVal();
-                worsts[i] = population.getWorstVal();
-                avgs[i] = population.getAvg();
-            }
             System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
             File f = new File(g+".csv");
             PrintWriter pw = new PrintWriter(f);
             StringBuilder sb = new StringBuilder("sep=,\n");
             for (int i = 0; i < bests.length; i++) {
-                sb.append(i + "," + (int)bests[i] + "," + (int)avgs[i] + "," + (int)worsts[i] + "\n");
+                sb.append(i).append(",").append((int) bests[i]).append(",").append((int) avgs[i]).append(",").append((int) worsts[i]).append("\n");
 
             }
             pw.write(sb.toString());
@@ -60,14 +49,13 @@ public class Main {
     private static void calculateVariance() {
         double avg = 0;
         double var = 0;
-        for (int i = 0; i < results.length; i++) {
-            avg += results[i];
+        for (double result1 : results) {
+            avg += result1;
 
         }
         avg = avg/iterations;
 
-        for (int i = 0; i < results.length; i++) {
-            double result = results[i];
+        for (double result : results) {
             var += Math.pow((result - avg), 2);
 
         }
@@ -100,7 +88,7 @@ public class Main {
         crossChance = sc.nextDouble();
         System.out.print("File Path = ");
         filePath = sc.next();
-        System.out.print("Population = ");
+        System.out.print("Populatin = ");
         populationSize = sc.nextInt();
         System.out.print("Generations = ");
         generations = sc.nextInt();
