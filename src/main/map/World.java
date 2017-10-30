@@ -1,6 +1,7 @@
 package main.map;
 
-import main.EvolutionAlgorithm.EvaluationFunction;
+
+import main.SimulatedAnnealing.EvaluationFunction;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package main.EvolutionAlgorithm;
+package main.SimulatedAnnealing;
 
 
 import main.greedy.Greedy;

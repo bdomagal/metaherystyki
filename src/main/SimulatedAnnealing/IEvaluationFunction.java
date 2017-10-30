@@ -1,4 +1,4 @@
-package main.EvolutionAlgorithm;
+package main.SimulatedAnnealing;
 
 /**
  * Created by Bartek on 18.10.2017.
