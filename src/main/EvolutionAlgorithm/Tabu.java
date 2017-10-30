@@ -1,5 +1,10 @@
 package main.EvolutionAlgorithm;
 
+import main.Main;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,29 +26,35 @@ public class Tabu {
         this.neighbourhoodSize = neighbourhoodSize;
     }
 
-    public Individual tabuSearch(){
+    public Individual tabuSearch() throws FileNotFoundException {
+        StringBuilder sb = new StringBuilder("sep=,\n");
         tabuList = new ArrayList<>(tabuListSize);
         best = new Individual(numberOfCities);
         best.setValue();
+        tabuList.add(best.getSequence());
         bestTime = best.getValue();
         for (int i = 0; i < iterations; i++) {
             Individual[] neighbourhood =  getNeighbourhood(best);
             Individual bestCandidate = neighbourhood[0];
             for (Individual individual : neighbourhood) {
-                if(!isInList(tabuList, individual.getSequence()) && individual.getValue()<bestCandidate.getValue()){
-                    bestCandidate  = individual;
+                if (!isInList(tabuList, individual.getSequence()) && individual.getValue() < bestCandidate.getValue()) {
+                    bestCandidate = individual;
                 }
             }
             if(bestCandidate.getValue()<bestTime){
                 best = bestCandidate;
                 bestTime = best.getValue();
-                //System.out.println( String.format("%04d: ", i) + bestTime);
             }
+            sb.append( String.format("%04d,%d,%d\n", i, (int)bestTime, (int)(bestCandidate.getValue())) );
             tabuList.add(bestCandidate.getSequence());
             if(tabuList.size()>tabuListSize){
                 tabuList.remove(0);
             }
         }
+        PrintWriter pw = new PrintWriter(new File("0.csv"));
+        pw.write(sb.toString());
+        pw.flush();
+        pw.close();
         return best;
 
     }

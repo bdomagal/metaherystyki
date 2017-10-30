@@ -7,6 +7,8 @@ import main.map.World;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -19,10 +21,11 @@ public class Main {
     private static int iterations;
     private static int tournament;
 
-    private static double[] bests;
+    public static double[] bests;
     private static double[] avgs;
     private static double[] worsts;
-    private static double[] results;
+    public static double[] results;
+    static double avg = 0;
     public static void main(String[] args) throws FileNotFoundException{
 	// write your code here
         loadParameters(args);
@@ -33,19 +36,18 @@ public class Main {
         World w = new World(filePath);
         int threads = 10;
         while(threads>0) {
-            Thread thread = new Thread(() -> {
-                Tabu tabuSearch = new Tabu(w.getSize(), 1000, 100000, 50);
-                double max = Double.MAX_VALUE;
-                for (int i = 0; i < 1; i++) {
-                    Individual ind = tabuSearch.tabuSearch();
-                    max = Math.min(ind.getValue(), max);
-                }
-                System.out.println(max);
-            });
-            thread.start();
+            Tabu tabuSearch = new Tabu(w.getSize(), 1000, 100, 300);
+            double max = Double.MAX_VALUE;
+            for (int i = 0; i < 1; i++) {
+                Individual ind = tabuSearch.tabuSearch();
+                max = Math.min(ind.getValue(), max);
+            }
+            System.out.println(String.format("%f",max));
+            Main.add(max);
             threads--;
 
         }
+        System.out.println("-------"+avg/10);
     }
 
     private static void calculateVariance() {
@@ -98,5 +100,8 @@ public class Main {
         iterations = sc.nextInt();
         System.out.print("Tournament Size = ");
         tournament = sc.nextInt();
+    }
+    public synchronized static void add(double val){
+        avg+=val;
     }
 }

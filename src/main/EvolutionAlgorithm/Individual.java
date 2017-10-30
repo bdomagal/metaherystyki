@@ -59,9 +59,18 @@ public class Individual {
     void mutate(){
         int i1 = random.nextInt(sequence.length);
         int i2 = random.nextInt(sequence.length);
-        int temp = sequence[i1];
-        sequence[i1] = sequence[i2];
-        sequence[i2] = temp;
+        if(i1<i2){
+            int t = i1;
+            i1 = i2;
+            i2 = t;
+        }
+        int[] temp = new int[i1-i2];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = sequence[i2+i];
+        }
+        for (int i = 0; i < temp.length; i++) {
+            sequence[i + i2] = temp[temp.length - i -1];
+        }
     }
 
     void cross(Individual other){
