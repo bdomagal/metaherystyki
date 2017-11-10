@@ -1,5 +1,6 @@
-package main.SimulatedAnnealing;
+package main.EvaluationFunction;
 
+import main.map.Individual;
 import main.map.World;
 
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ public class EvaluationFunction implements IEvaluationFunction {
         distanceMatrix = null;
     }
 
-    double[][] getDistanceMatrix() {
+    public double[][] getDistanceMatrix() {
         return distanceMatrix;
     }
 
@@ -35,7 +36,7 @@ public class EvaluationFunction implements IEvaluationFunction {
 
     }
 
-    static EvaluationFunction getInstance(){
+    public static EvaluationFunction getInstance(){
         if(instance == null){
             LOGGER.warning("Evaluation function needs to be initialized with cities first.");
         }
@@ -52,8 +53,8 @@ public class EvaluationFunction implements IEvaluationFunction {
     public double evaluate(Individual individual){
         int[] sequence = individual.getSequence();
         double result = 0;
-        for (int i = 0; i < sequence.length-1; i++) {
-            result+=distanceMatrix[sequence[i]][sequence[i+1]];
+        for (int i = 0; i < sequence.length; i++) {
+            result+=distanceMatrix[sequence[i]][sequence[(i+1)%sequence.length]];
         }
         return result;
     }

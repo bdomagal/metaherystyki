@@ -1,20 +1,21 @@
 package main;
 
-import main.SimulatedAnnealing.SimpleTemperatureFunction;
-import main.SimulatedAnnealing.SimulatedAnnealing;
+import main.algorithms.SimulatedAnnealing.SimpleTemperatureFunction;
+import main.algorithms.SimulatedAnnealing.SimulatedAnnealing;
 import main.map.World;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-public class Main {
+public class MainSA {
 
 
-    private static String   filePath      = "tsp_data/kroA100.tsp";
-    private static double   maxTemp       = 350;
-    private static int      iterations    = 10000000;
-    private static int      launches      = 20;
+    public static String   file      = "kroA100";
+    public static String   filePath      = "tsp_data/"+file +".tsp";
+    private static double   maxTemp       = 100000;
+    private static int      iterations    = 1000000;
+    private static int      launches      = 10;
     public static double[]  bests;
     public static double[] results;
     static double avg = 0;
@@ -22,7 +23,7 @@ public class Main {
         bests = new double[iterations];
         results = new double[launches];
         World w = new World(filePath);
-        SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.9999999));
+        SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.9999));
         while(launches>0) {
             results[launches-1] = sa.solve(w.getSize(), iterations, maxTemp).getValue();
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -35,13 +36,13 @@ public class Main {
             launches--;
 
         }
-        avg/=20;
+        avg/=10;
         System.out.println("-------"+avg);
         double res = 0;
         for (double result : results) {
             res += Math.sqrt(Math.pow(result-avg, 2));
         }
-        res /=20;
+        res /=10;
         System.out.println(res);
     }
 

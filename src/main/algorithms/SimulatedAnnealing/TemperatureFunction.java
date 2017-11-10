@@ -1,4 +1,4 @@
-package main.SimulatedAnnealing;
+package main.algorithms.SimulatedAnnealing;
 
 public interface TemperatureFunction {
     double getEps();

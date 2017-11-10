@@ -1,6 +1,7 @@
-package main.SimulatedAnnealing;
+package main.map;
 
 
+import main.EvaluationFunction.EvaluationFunction;
 import main.greedy.Greedy;
 import main.greedy.IGreedy;
 
@@ -22,11 +23,11 @@ public class Individual {
         return value;
     }
 
-    void setValue() {
+    public void setValue() {
         this.value = EvaluationFunction.getInstance().evaluate(this);
     }
 
-    Individual(int numberOfCities){
+    public Individual(int numberOfCities){
         sequence = new int[numberOfCities];
         init(numberOfCities);
         greedy = Greedy.getInstance(EvaluationFunction.getInstance().getDistanceMatrix());
@@ -42,7 +43,7 @@ public class Individual {
         return sb.toString();
     }
 
-    int[] getSequence() {
+    public int[] getSequence() {
         return sequence;
     }
 
@@ -51,12 +52,12 @@ public class Individual {
         greedy = Greedy.getInstance();
     }
 
-    Individual(Individual individual){
+    public Individual(Individual individual){
         greedy=individual.greedy;
         sequence = individual.sequence.clone();
     }
 
-    void mutate(){
+    public void mutate(){
         int i1 = random.nextInt(sequence.length);
         int i2 = random.nextInt(sequence.length);
         if(i1<i2){
@@ -73,7 +74,7 @@ public class Individual {
         }
     }
 
-    void cross(Individual other){
+    public void cross(Individual other){
         boolean[] used = new boolean[sequence.length];
         for (int i = 0; i < sequence.length/2; i++) {
             used[sequence[i]] = true;

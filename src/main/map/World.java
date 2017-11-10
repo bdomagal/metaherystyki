@@ -1,7 +1,7 @@
 package main.map;
 
 
-import main.SimulatedAnnealing.EvaluationFunction;
+import main.EvaluationFunction.EvaluationFunction;
 
 import java.io.File;
 import java.io.FileNotFoundException;

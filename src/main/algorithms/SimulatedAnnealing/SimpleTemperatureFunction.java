@@ -1,4 +1,4 @@
-package main.SimulatedAnnealing;
+package main.algorithms.SimulatedAnnealing;
 
 public class SimpleTemperatureFunction implements TemperatureFunction {
     private double step;
@@ -12,7 +12,7 @@ public class SimpleTemperatureFunction implements TemperatureFunction {
     public double cool(double maxTemp, int k) {
         if (curr == 0){curr = maxTemp;}
         curr = step * curr;
-        return maxTemp/(1+Math.log(1+k));
+        return curr;
     }
 
     public SimpleTemperatureFunction(double v) {
