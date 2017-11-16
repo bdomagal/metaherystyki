@@ -45,7 +45,7 @@ public class Tabu {
                 best = bestCandidate;
                 bestTime = best.getValue();
             }
-            if(i%(iterations/1000)==0) {
+            if(i>9000) {
                 sb.append(String.format("%04d,%d,%d\n", i, (int) bestTime, (int) (bestCandidate.getValue())));
             }
             tabuList.add(bestCandidate.getSequence());

@@ -11,21 +11,22 @@ import java.text.DecimalFormatSymbols;
 public class MainSA {
 
 
-    public static String   file      = "kroA100";
+    public static String   file      = "kroA200";
     public static String   filePath      = "tsp_data/"+file +".tsp";
-    private static double   maxTemp       = 100000;
-    private static int      iterations    = 1000000;
+    private static double   maxTemp       = 10000;
+    private static int      iterations    = 100000;
     private static int      launches      = 10;
+    private static int      nieghbourhood = 10;
     public static double[]  bests;
     public static double[] results;
     static double avg = 0;
     public static void main(String[] args) throws FileNotFoundException{
-        bests = new double[iterations];
         results = new double[launches];
+        bests = new double[iterations];
         World w = new World(filePath);
-        SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.9999));
         while(launches>0) {
-            results[launches-1] = sa.solve(w.getSize(), iterations, maxTemp).getValue();
+            SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.9999));
+            results[launches-1] = sa.solve(w.getSize(), iterations, maxTemp, nieghbourhood).getValue();
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setDecimalSeparator(',');
             DecimalFormat df = new DecimalFormat("########.#######", symbols);

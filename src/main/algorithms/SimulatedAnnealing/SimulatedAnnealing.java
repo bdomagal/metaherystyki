@@ -18,17 +18,15 @@ public class SimulatedAnnealing {
         random = new Random();
     }
 
-    public Individual solve(int size, int kMax, double maxTemp){
+    public Individual solve(int size, int kMax, double maxTemp, int neigh){
         StringBuilder sb = new StringBuilder("sep=,\n");
         Individual point = new Individual(size);
         point.setValue();
         
         double temp = maxTemp;
         int k = 0;
-        while(temp>temperatureFunction.getEps() && k<kMax){
-            Individual neighbour = new Individual(point);
-            neighbour.mutate();
-            neighbour.setValue();
+        while(k<kMax){
+            Individual neighbour = getBestNeighbour(neigh, point);
             if(neighbour.getValue()<point.getValue()){
                 point = neighbour;
             }
@@ -54,6 +52,23 @@ public class SimulatedAnnealing {
             e.printStackTrace();
         }
         return point;
+    }
+
+    private Individual getBestNeighbour(int neigh, Individual point) {
+
+        Individual best = null;
+        double b = Double.MAX_VALUE;
+        for (int i = 0; i < neigh; i++) {
+            Individual neighbour = new Individual(point);
+            neighbour.mutate();
+            neighbour.setValue();
+            if(neighbour.getValue()<b){
+                b= neighbour.getValue();
+                best = neighbour;
+            }
+        }
+        return best;
+
     }
 
 }
