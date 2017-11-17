@@ -56,6 +56,10 @@ public class Greedy implements IGreedy {
         return sequence;
     }
 
+    public static void unset() {
+        instance = null;
+    }
+
     /**
      * Created by Bartek on 18.10.2017.
      */

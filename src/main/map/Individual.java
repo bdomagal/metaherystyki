@@ -60,6 +60,10 @@ public class Individual {
     public void mutate(){
         int i1 = random.nextInt(sequence.length);
         int i2 = random.nextInt(sequence.length);
+        swap(i1, i2);
+    }
+
+    private void swap(int i1, int i2) {
         if(i1<i2){
             int t = i1;
             i1 = i2;
@@ -71,6 +75,15 @@ public class Individual {
         }
         for (int i = 0; i < temp.length; i++) {
             sequence[i + i2] = temp[temp.length - i -1];
+        }
+    }
+
+    public void mutateMultiple(double mutationChance){
+        for (int i1 = 0; i1 < sequence.length; i1++) {
+            if(random.nextDouble()<mutationChance) {
+                int i2 = random.nextInt(sequence.length);
+                swap(i1, i2);
+            }
         }
     }
 

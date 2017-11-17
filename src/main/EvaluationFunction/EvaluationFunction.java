@@ -36,6 +36,9 @@ public class EvaluationFunction implements IEvaluationFunction {
 
     }
 
+    public static void unSet(){
+        instance = null;
+    }
     public static EvaluationFunction getInstance(){
         if(instance == null){
             LOGGER.warning("Evaluation function needs to be initialized with cities first.");

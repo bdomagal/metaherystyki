@@ -79,9 +79,8 @@ public class Population {
         if(random.nextDouble()<crossChance){
             father.cross(mother);
         }
-        if(random.nextDouble()<mutationChance){
-            father.mutate();
-        }
+            father.mutateMultiple(mutationChance);
+
         return father;
     }
 
