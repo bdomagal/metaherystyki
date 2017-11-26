@@ -2,21 +2,31 @@ package main;
 
 import main.EvaluationFunction.EvaluationFunction;
 import main.algorithms.Population;
+import main.algorithms.SimulatedAnnealing.SimpleTemperatureFunction;
+import main.algorithms.SimulatedAnnealing.SimulatedAnnealing;
+import main.algorithms.Tabu;
 import main.greedy.Greedy;
+import main.map.Individual;
 import main.map.World;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class MainGA {
-    private static double mutationChance = 0.005;
-    private static double crossChance = 0.3;
+public class MainGASA {
+    private static double mutationChance = 0.025;
+    private static double crossChance = 0.5;
     private static String fileName = "kroA100";
     private static String filePath = "tsp_data/" + fileName + ".tsp";
-    private static int populationSize = 500;
-    private static int generations = 500;
-    private static int iterations = 10;
-    private static int tournament = 18;
+    private static int populationSize = 10;
+    private static int generations = 2;
+    private static int launches = 10;
+    private static int tournament = 2;
+
+    private static double   maxTemp       = 10000;
+    private static int      iterations    = 20000;
+    private static int      nieghbourhood = 20;
 
     private static double[] bests;
     private static double[] avgs;
@@ -27,7 +37,7 @@ public class MainGA {
         System.out.println("this is GA:");
         World w =null;
         String[] mutations = {"kroA100", "kroA200", "kroB100", "kroB200","kroC100","kroD100","kroE100"};
-
+        long startTime = System.currentTimeMillis();
         for (String mutation : mutations) {
             EvaluationFunction.unSet();
             Greedy.unset();
@@ -37,8 +47,8 @@ public class MainGA {
             bests = new double[generations];
             avgs = new double[generations];
             worsts = new double[generations];
-            results = new double[iterations];
-            for (int g = 0; g < iterations; g++) {
+            results = new double[launches];
+            for (int g = 0; g < launches; g++) {
                 Population population = new Population(populationSize, w.getSize());
                 for (int i = 0; i < generations; i++) {
                     population.nextGeneration(tournament, crossChance, mutationChance);
@@ -46,8 +56,17 @@ public class MainGA {
                     worsts[i] = population.getWorstVal();
                     avgs[i] = population.getAvg();
                 }
-                //System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
-                /*File f = new File(g + ".csv");
+                results[g] = bests[generations-1];
+                //System.out.println("-----------------"+results[g]);
+                for (Individual individual : population.population) {
+                    SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.999));
+                    Individual ind1 = sa.solve(iterations, maxTemp, nieghbourhood, individual);
+                    if(results[g]>ind1.getValue()) {
+                        results[g] = ind1.getValue();
+                    }
+                }
+//                System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
+                File f = new File(g + ".csv");
                 PrintWriter pw = new PrintWriter(f);
                 StringBuilder sb = new StringBuilder("sep=,\n");
                 for (int i = 0; i < bests.length; i++) {
@@ -56,13 +75,36 @@ public class MainGA {
                 }
                 pw.write(sb.toString());
                 pw.flush();
-                pw.close();*/
-                results[g] = bests[generations - 1];
+                pw.close();
+                //System.out.println(results[g]);
             }
             calculateVariance();
 
+            long endTime   = System.currentTimeMillis();
+            long totalTime = endTime - startTime;
+            System.out.println(totalTime/1000);
         }
     }
+
+    private static double getBest(Individual ind) {
+        Individual temp = ind.localBest();
+        temp.setValue();
+        int idleCtr = 0;
+        while (ind.getValue() >= temp.getValue() && idleCtr < 2) {
+            if (temp.getValue() == ind.getValue()) {
+                idleCtr++;
+                ind = temp;
+            }
+            if (temp.getValue() < ind.getValue()) {
+                idleCtr = 0;
+                ind = temp;
+            }
+            temp = ind.localBest();
+            temp.setValue();
+        }
+        return ind.getValue();
+    }
+
 
     private static void calculateVariance() {
         double avg = 0;
@@ -71,14 +113,14 @@ public class MainGA {
             avg += results[i];
 
         }
-        avg = avg/iterations;
+        avg = avg/launches;
 
         for (int i = 0; i < results.length; i++) {
             double result = results[i];
             var += Math.pow((result - avg), 2);
 
         }
-        var = Math.sqrt(var/ iterations);
+        var = Math.sqrt(var/ launches);
         System.out.println(fileName + "------ " + avg + "   " + var);
     }
 

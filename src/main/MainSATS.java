@@ -3,22 +3,21 @@ package main;
 import main.EvaluationFunction.EvaluationFunction;
 import main.algorithms.SimulatedAnnealing.SimpleTemperatureFunction;
 import main.algorithms.SimulatedAnnealing.SimulatedAnnealing;
+import main.algorithms.SimulatedAnnealing.TabuSimulatedAnnealing;
 import main.greedy.Greedy;
 import main.map.World;
-import java.io.FileNotFoundException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 
-public class MainSA {
+import java.io.FileNotFoundException;
+
+public class MainSATS {
 
 
     public static String   file      = "kroA100";
     public static String   filePath      = "tsp_data/"+file +".tsp";
     private static double   maxTemp       = 10000;
-    private static int      iterations    = 250000;
+    private static int      iterations    = 10000;
     private static int      launches      = 50;
-    private static int      nieghbourhood = 20;
+    private static int      nieghbourhood = 10;
     public static double[]  bests;
     public static double[] results;
     static double avg = 0;
@@ -38,8 +37,8 @@ public class MainSA {
             bests = new double[iterations];
             World w = new World(filePath);
             for (int i = 0; i < launches; i++) {
-                SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.99994));
-                results[i] = sa.solve(w.getSize(), iterations, maxTemp, nieghbourhood).getValue();
+                TabuSimulatedAnnealing sa = new TabuSimulatedAnnealing(new SimpleTemperatureFunction(0.999));
+                results[i] = sa.solve(w.getSize(), iterations, maxTemp, nieghbourhood, 10).getValue();
             /*DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setDecimalSeparator(',');
             DecimalFormat df = new DecimalFormat("########.#######", symbols);

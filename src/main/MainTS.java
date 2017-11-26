@@ -14,10 +14,10 @@ public class MainTS {
 
     public static String    file            = "kroA100";
     public static String    filePath        = "tsp_data/"+file +".tsp";
-    private static int      iterations      = 10000;
+    private static int      iterations      = 100000;
     private static int      launches        = 50;
-    private static int      tabuListSize    = 5;
-    private static int      neigbourhoodSize=1;
+    private static int      tabuListSize    = 10;
+    private static int      neigbourhoodSize=50;
 
     public static double[] bests;
     public static double[] results;
@@ -26,6 +26,7 @@ public class MainTS {
 	// write your code here
         System.out.println("this is TS:");
         String[] variations = {"kroA100", "kroA200", "kroB100", "kroB200","kroC100","kroD100","kroE100"};
+        long startTime = System.currentTimeMillis();
         for (String variation : variations) {
             avg=0;
             EvaluationFunction.unSet();
@@ -54,6 +55,9 @@ public class MainTS {
             pw.flush();
             pw.close();*/
             calculateVariance();
+            long endTime   = System.currentTimeMillis();
+            long totalTime = endTime - startTime;
+            System.out.println(totalTime/1000);
         }
     }
 

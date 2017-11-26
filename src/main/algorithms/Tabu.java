@@ -79,7 +79,7 @@ public class Tabu {
                 best = bestCandidate;
                 bestTime = best.getValue();
             }
-            if(i>9000) {
+            if(i%1==0) {
                 sb.append(String.format("%04d,%d,%d\n", i, (int) bestTime, (int) (bestCandidate.getValue())));
             }
             tabuList.add(bestCandidate.getSequence());
@@ -87,7 +87,7 @@ public class Tabu {
                 tabuList.remove(0);
             }
         }
-        PrintWriter pw = new PrintWriter(new File("0.csv"));
+        PrintWriter pw = new PrintWriter(new File("0TS.csv"));
         pw.write(sb.toString());
         pw.flush();
         pw.close();

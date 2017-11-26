@@ -7,22 +7,24 @@ import main.greedy.Greedy;
 import main.map.Individual;
 import main.map.World;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.PrintWriter;
+import java.util.*;
 
 public class MainGALocal {
     private static double mutationChance = 0.025;
     private static double crossChance = 0.3;
     private static String fileName = "kroA100";
     private static String filePath = "tsp_data/" + fileName + ".tsp";
-    private static int populationSize = 2000;
-    private static int generations = 400;
+    private static int populationSize = 100;
+    private static int generations = 5;
     private static int iterations = 10;
-    private static int tournament = 35;
+    private static int tournament = 3;
 
-    private static int      tabuIter        = 100;
-    private static int      tabuListSize    = 50;
-    private static int      neigbourhoodSize=5;
+    private static int      tabuIter        = 5000;
+    private static int      tabuListSize    = 5;
+    private static int      neigbourhoodSize=10;
     private static double[] bests;
     private static double[] avgs;
     private static double[] worsts;
@@ -31,8 +33,8 @@ public class MainGALocal {
 	// write your code here
         System.out.println("this is GA:");
         World w =null;
-        String[] mutations = {"kroA100"/*, "kroA200", "kroB100", "kroB200","kroC100","kroD100","kroE100"*/};
-
+        String[] mutations = {"kroA100", "kroA200", "kroB100", "kroB200","kroC100","kroD100","kroE100"};
+        long startTime = System.currentTimeMillis();
         for (String mutation : mutations) {
             EvaluationFunction.unSet();
             Greedy.unset();
@@ -52,20 +54,17 @@ public class MainGALocal {
                     avgs[i] = population.getAvg();
                 }
                 results[g] = bests[generations-1];
-                System.out.println("-----------------"+results[g]);
+                //System.out.println("-----------------"+results[g]);
                 for (Individual individual : population.population) {
                     Tabu tabuSearch = new Tabu(w.getSize(), tabuIter, tabuListSize, neigbourhoodSize);
-                    double max = Double.MAX_VALUE;
-                    for (int k = 0; k < 1; k++) {
-                        Individual ind = tabuSearch.tabuSearch(individual);
-                        max = Math.min(ind.getValue(), max);
+                    Individual ind1 = individual;
+                    ind1 = tabuSearch.tabuSearch(ind1);
+                    if(results[g]>ind1.getValue()) {
+                        results[g] = ind1.getValue();
                     }
-                    //System.out.println(String.format("%d : %f", i, max));
-                    //sb.append(String.format("%f\n", max));
-                    results[g] = Math.min(bests[generations-1], max);
                 }
 //                System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
-                /*File f = new File(g + ".csv");
+                File f = new File(g + ".csv");
                 PrintWriter pw = new PrintWriter(f);
                 StringBuilder sb = new StringBuilder("sep=,\n");
                 for (int i = 0; i < bests.length; i++) {
@@ -74,11 +73,14 @@ public class MainGALocal {
                 }
                 pw.write(sb.toString());
                 pw.flush();
-                pw.close();*/
-                System.out.println(results[g]);
+                pw.close();
+                //System.out.println(results[g]);
             }
             calculateVariance();
 
+            long endTime   = System.currentTimeMillis();
+            long totalTime = endTime - startTime;
+            System.out.println(totalTime/1000);
         }
     }
 

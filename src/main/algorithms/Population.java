@@ -29,10 +29,10 @@ public class Population {
     }
     private void init() {
         for (int i = 0; i < population.length; i++) {
-            population[i] = new Individual(numberOfCities);
+            population[i] = new Individual(numberOfCities, true);
             population[i].setValue();
         }
-
+        //System.out.println(Individual.x);
     }
 
     public Individual getBest() {

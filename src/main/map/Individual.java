@@ -2,9 +2,11 @@ package main.map;
 
 
 import main.EvaluationFunction.EvaluationFunction;
+import main.algorithms.Tabu;
 import main.greedy.Greedy;
 import main.greedy.IGreedy;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -18,6 +20,14 @@ public class Individual {
     private final IGreedy greedy;
 
     private double value;
+
+    public static int  x = 0;
+    public Individual(int numberOfCities, boolean b) {
+        sequence = new int[numberOfCities];
+        init(numberOfCities, b);
+        greedy = Greedy.getInstance(EvaluationFunction.getInstance().getDistanceMatrix());
+        x++;
+    }
 
     public double getValue() {
         return value;
@@ -180,6 +190,16 @@ public class Individual {
         for (int i = 0; i < numberOfCities; i++) {
             sequence[i] = temp.get(i);
         }
+    }
+    private void init(int numberOfCities, boolean b) {
+        Tabu t = new Tabu(numberOfCities, 1000, 5 ,10);
+        int[] se = null;
+        try {
+            se = t.tabuSearch().sequence;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        sequence = se;
     }
 
     public Individual localBest(){
