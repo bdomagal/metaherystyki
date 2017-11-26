@@ -87,7 +87,7 @@ public class Individual {
         }
     }
 
-    public void cross(Individual other){
+    public void cross2(Individual other){
         boolean[] used = new boolean[sequence.length];
         for (int i = 0; i < sequence.length/2; i++) {
             used[sequence[i]] = true;
@@ -105,6 +105,67 @@ public class Individual {
 
     }
 
+    public void cross(Individual other){
+        int start = random.nextInt(sequence.length);
+        int end = random.nextInt(sequence.length);
+        if(start==end){return;}
+        if(end<start){
+            int t = end;
+            end = start;
+            start= t;
+        }
+        int[] child = new int[sequence.length];
+        int[] p2 = other.getSequence();
+        for (int i = 0; i < p2.length; i++) {
+            if(i<start||i>end){
+                child[i] = -1;
+            }
+            else{
+                child[i] = sequence[i];
+            }
+        }
+        for (int i = start; i <= end; i++) {
+            if(!contains(child, p2[i])) {
+                int swap = determinePos(sequence, p2, start, end, i);
+                child[swap] = p2[i];
+            }
+        }
+        for (int i = 0; i < p2.length; i++) {
+            if(child[i]<0){
+                child[i]=p2[i];
+            }
+
+        }
+        sequence=child;
+    }
+
+    private boolean contains(int[] child, int i) {
+        for (int j = 0; j < child.length; j++) {
+            int i1 = child[j];
+            if(i==i1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int determinePos(int[] sequence, int[] p2, int start, int end, int i) {
+        int pos = i;
+        pos = find(sequence[i], p2);
+        if(pos<=end && pos>=start){
+            return determinePos(sequence, p2, start, end, pos);
+        }
+        return pos;
+    }
+
+    private int find(int i, int[] p2) {
+        for (int j = 0; j < p2.length; j++) {
+            if(p2[j]==i){
+                return j;}
+        }
+        return -1;
+    }
+
 
     /**
      * Initialize individual with random order of cities
@@ -119,6 +180,23 @@ public class Individual {
         for (int i = 0; i < numberOfCities; i++) {
             sequence[i] = temp.get(i);
         }
+    }
+
+    public Individual localBest(){
+        Individual best =null;
+        double  b = Double.MAX_VALUE;
+        for (int i = 0; i < sequence.length; i++) {
+            for (int j = i+1; j < sequence.length; j++) {
+                Individual ind = new Individual(this);
+                ind.swap(i,j);
+                ind.setValue();
+                if(ind.getValue()<b){
+                    best = ind;
+                    b= ind.getValue();
+                }
+            }
+        }
+        return best;
     }
 
 }

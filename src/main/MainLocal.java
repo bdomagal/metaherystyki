@@ -1,30 +1,25 @@
 package main;
 
-import com.sun.org.apache.bcel.internal.generic.POP;
 import main.EvaluationFunction.EvaluationFunction;
 import main.algorithms.Population;
 import main.greedy.Greedy;
 import main.map.Individual;
 import main.map.World;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class MainGA {
+public class MainLocal {
     private static double mutationChance = 0.025;
     private static double crossChance = 0.3;
     private static String fileName = "kroA100";
     private static String filePath = "tsp_data/" + fileName + ".tsp";
     private static int populationSize = 4000;
     private static int generations = 1000;
-    private static int iterations = 10;
+    private static int iterations = 20;
     private static int tournament = 35;
 
-    private static double[] bests;
-    private static double[] avgs;
-    private static double[] worsts;
+
     private static double[] results;
     public static void main(String[] args) throws FileNotFoundException{
 	// write your code here
@@ -38,32 +33,34 @@ public class MainGA {
             fileName = mutation;
             filePath = "tsp_data/" + fileName + ".tsp";
             w = new World(filePath);
-            bests = new double[generations];
-            avgs = new double[generations];
-            worsts = new double[generations];
             results = new double[iterations];
-            for (int g = 0; g < iterations; g++) {
-                Population population = new Population(populationSize, w.getSize());
-                for (int i = 0; i < generations; i++) {
-                    population.nextGeneration(tournament, crossChance, mutationChance);
-                    bests[i] = population.getBestVal();
-                    worsts[i] = population.getWorstVal();
-                    avgs[i] = population.getAvg();
+            double best = Double.MAX_VALUE;
+            for(int i = 0; i<iterations; i++) {
+                Individual ind = new Individual(100);
+                ind.setValue();
+                Individual temp = ind.localBest();
+                temp.setValue();
+                int idleCtr = 0;
+                while (ind.getValue() >= temp.getValue() && idleCtr < 5) {
+                    if (temp.getValue() == ind.getValue()) {
+                        idleCtr++;
+                        ind = temp;
+                    }
+                    if (temp.getValue() < ind.getValue()) {
+                        idleCtr = 0;
+                        ind = temp;
+                    }
+                    temp = ind.localBest();
+                    temp.setValue();
                 }
-                System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
-                /*File f = new File(g + ".csv");
-                PrintWriter pw = new PrintWriter(f);
-                StringBuilder sb = new StringBuilder("sep=,\n");
-                for (int i = 0; i < bests.length; i++) {
-                    sb.append(i + "," + (int) bests[i] + "," + (int) avgs[i] + "," + (int) worsts[i] + "\n");
-
+                System.out.println(ind.getValue());
+                results[i] = ind.getValue();
+                if(best>ind.getValue()){
+                    best=ind.getValue();
                 }
-                pw.write(sb.toString());
-                pw.flush();
-                pw.close();*/
-                results[g] = bests[generations - 1];
             }
             calculateVariance();
+            System.out.println(best);
 
         }
     }

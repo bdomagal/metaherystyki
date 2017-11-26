@@ -16,9 +16,9 @@ public class MainSA {
     public static String   file      = "kroA100";
     public static String   filePath      = "tsp_data/"+file +".tsp";
     private static double   maxTemp       = 10000;
-    private static int      iterations    = 1000;
+    private static int      iterations    = 10000;
     private static int      launches      = 50;
-    private static int      nieghbourhood = 10;
+    private static int      nieghbourhood = 1;
     public static double[]  bests;
     public static double[] results;
     static double avg = 0;
@@ -38,7 +38,7 @@ public class MainSA {
             bests = new double[iterations];
             World w = new World(filePath);
             for (int i = 0; i < launches; i++) {
-                SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.99));
+                SimulatedAnnealing sa = new SimulatedAnnealing(new SimpleTemperatureFunction(0.999));
                 results[i] = sa.solve(w.getSize(), iterations, maxTemp, nieghbourhood).getValue();
             /*DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setDecimalSeparator(',');

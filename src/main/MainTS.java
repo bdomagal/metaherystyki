@@ -14,10 +14,10 @@ public class MainTS {
 
     public static String    file            = "kroA100";
     public static String    filePath        = "tsp_data/"+file +".tsp";
-    private static int      iterations      = 100000;
+    private static int      iterations      = 10000;
     private static int      launches        = 50;
-    private static int      tabuListSize    = 10;
-    private static int      neigbourhoodSize=10;
+    private static int      tabuListSize    = 5;
+    private static int      neigbourhoodSize=1;
 
     public static double[] bests;
     public static double[] results;

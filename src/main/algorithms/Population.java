@@ -9,7 +9,7 @@ import java.util.Random;
  * Created by Bartek on 18.10.2017.
  */
 public class Population {
-    private Individual[] population;
+    public Individual[] population;
     private int numberOfCities;
     private Individual best;
     private double bestVal;
@@ -75,7 +75,7 @@ public class Population {
         population = next;
     }
 
-    private Individual getChild(Individual father, Individual mother, double crossChance, double mutationChance) {
+    public Individual getChild(Individual father, Individual mother, double crossChance, double mutationChance) {
         if(random.nextDouble()<crossChance){
             father.cross(mother);
         }

@@ -1,27 +1,28 @@
 package main;
 
-import com.sun.org.apache.bcel.internal.generic.POP;
 import main.EvaluationFunction.EvaluationFunction;
 import main.algorithms.Population;
+import main.algorithms.Tabu;
 import main.greedy.Greedy;
 import main.map.Individual;
 import main.map.World;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class MainGA {
+public class MainGALocal {
     private static double mutationChance = 0.025;
     private static double crossChance = 0.3;
     private static String fileName = "kroA100";
     private static String filePath = "tsp_data/" + fileName + ".tsp";
-    private static int populationSize = 4000;
-    private static int generations = 1000;
+    private static int populationSize = 2000;
+    private static int generations = 400;
     private static int iterations = 10;
     private static int tournament = 35;
 
+    private static int      tabuIter        = 100;
+    private static int      tabuListSize    = 50;
+    private static int      neigbourhoodSize=5;
     private static double[] bests;
     private static double[] avgs;
     private static double[] worsts;
@@ -50,7 +51,20 @@ public class MainGA {
                     worsts[i] = population.getWorstVal();
                     avgs[i] = population.getAvg();
                 }
-                System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
+                results[g] = bests[generations-1];
+                System.out.println("-----------------"+results[g]);
+                for (Individual individual : population.population) {
+                    Tabu tabuSearch = new Tabu(w.getSize(), tabuIter, tabuListSize, neigbourhoodSize);
+                    double max = Double.MAX_VALUE;
+                    for (int k = 0; k < 1; k++) {
+                        Individual ind = tabuSearch.tabuSearch(individual);
+                        max = Math.min(ind.getValue(), max);
+                    }
+                    //System.out.println(String.format("%d : %f", i, max));
+                    //sb.append(String.format("%f\n", max));
+                    results[g] = Math.min(bests[generations-1], max);
+                }
+//                System.out.println(bests[generations - 1] + "   " + avgs[generations - 1] + "   " + worsts[generations - 1]);
                 /*File f = new File(g + ".csv");
                 PrintWriter pw = new PrintWriter(f);
                 StringBuilder sb = new StringBuilder("sep=,\n");
@@ -61,12 +75,32 @@ public class MainGA {
                 pw.write(sb.toString());
                 pw.flush();
                 pw.close();*/
-                results[g] = bests[generations - 1];
+                System.out.println(results[g]);
             }
             calculateVariance();
 
         }
     }
+
+    private static double getBest(Individual ind) {
+        Individual temp = ind.localBest();
+        temp.setValue();
+        int idleCtr = 0;
+        while (ind.getValue() >= temp.getValue() && idleCtr < 2) {
+            if (temp.getValue() == ind.getValue()) {
+                idleCtr++;
+                ind = temp;
+            }
+            if (temp.getValue() < ind.getValue()) {
+                idleCtr = 0;
+                ind = temp;
+            }
+            temp = ind.localBest();
+            temp.setValue();
+        }
+        return ind.getValue();
+    }
+
 
     private static void calculateVariance() {
         double avg = 0;
